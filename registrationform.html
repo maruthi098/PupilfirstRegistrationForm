@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.2.7/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffcccb;
+            /* light pink */
+        }
+
+        .form-container {
+            background-color: #d3d3d3;
+            /* light gray */
+            border: 2px solid #ff4500;
+            /* orange red */
+        }
+
+        table {
+            border: 2px solid #ff4500;
+            /* orange red */
+        }
+
+        th,
+        td {
+            border: 1px solid #ff4500;
+            /* orange red */
+            color: #ff4500;
+            /* orange red */
+        }
+
+        button {
+            background-color: #ff4500;
+            /* orange red */
+            color: white;
+        }
+
+        button:hover {
+            background-color: #ff6347;
+            /* tomato */
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen">
+    <div class="form-container p-6 rounded-lg shadow-lg w-80">
+        <h1 class="text-xl font-bold mb-4">Registration Form</h1>
+        <form id="registrationForm" class="space-y-4">
+            <div>
+                <label for="name" class="block text-lg">Name:</label>
+                <input type="text" id="name" name="name" class="w-full p-2 border border-gray-300 rounded" required>
+            </div>
+            <div>
+                <label for="email" class="block text-lg">Email:</label>
+                <input type="email" id="email" name="email" class="w-full p-2 border border-gray-300 rounded" required>
+            </div>
+            <div>
+                <label for="password" class="block text-lg">Password:</label>
+                <input type="password" id="password" name="password" class="w-full p-2 border border-gray-300 rounded">
+            </div>
+            <div>
+                <label for="dob" class="block text-lg">Date of Birth:</label>
+                <input type="date" id="dob" name="dob" class="w-full p-2 border border-gray-300 rounded" required>
+            </div>
+            <div>
+                <label for="terms" class="inline-flex items-center">
+                    <input type="checkbox" id="terms" name="terms" class="mr-2" required>
+                    Accept terms and conditions
+                </label>
+            </div>
+            <button type="submit" class="w-full p-2 rounded">Submit</button>
+        </form>
+    </div>
+
+    <div class="mt-8 w-80">
+        <table class="w-full mt-4">
+            <thead>
+                <tr>
+                    <th class="p-2">Name</th>
+                    <th class="p-2">Email</th>
+                    <th class="p-2">Password</th>
+                    <th class="p-2">Dob</th>
+                    <th class="p-2">Accepted terms?</th>
+                </tr>
+            </thead>
+            <tbody id="dataTable">
+                <!-- Data will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Clear localStorage to ensure table is empty
+            localStorage.removeItem('formData');
+
+            // Clear the table
+            const table = document.getElementById('dataTable');
+            table.innerHTML = ''; // Ensure table is empty on page load
+        });
+
+        document.getElementById('registrationForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const dob = document.getElementById('dob').value;
+            const termsAccepted = document.getElementById('terms').checked ? 'Yes' : 'No';
+
+            // Validate date of birth
+            const today = new Date();
+            const dobDate = new Date(dob);
+            const age = today.getFullYear() - dobDate.getFullYear();
+            const isValidAge = age >= 18 && age <= 55;
+
+            if (!isValidAge) {
+                alert('Date of birth must be between 18 and 55 years old.');
+                return;
+            }
+
+            // Add new data to the table
+            const table = document.getElementById('dataTable');
+            const newRow = table.insertRow();
+            newRow.insertCell().textContent = name;
+            newRow.insertCell().textContent = email;
+            newRow.insertCell().textContent = password;
+            newRow.insertCell().textContent = dob;
+            newRow.insertCell().textContent = termsAccepted;
+
+            // Save form data to localStorage
+            const formData = JSON.parse(localStorage.getItem('formData')) || [];
+            formData.push({ name, email, password, dob, termsAccepted });
+            localStorage.setItem('formData', JSON.stringify(formData));
+
+            // Clear form fields
+            document.getElementById('registrationForm').reset();
+        });
+    </script>
+</body>
+
+</html>
